@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LocalLLM — Run AI On Your Own Machine</title>
+<style>
+  /* ============ LUXURY HAND-DRAWN THEME ============ */
+  :root {
+    --paper: #F5EFE3;
+    --paper-dark: #EBE2D0;
+    --ink: #1A1A1A;
+    --gold: #B8893A;
+    --gold-light: #D4AF37;
+    --burgundy: #6B1F2A;
+    --pencil: #8A7F6D;
+    --cream: #FBF7EE;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(184,137,58,0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 70%, rgba(107,31,42,0.05) 0%, transparent 50%);
+    color: var(--ink);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    line-height: 1.7;
+    padding: 20px;
+    min-height: 100vh;
+  }
+
+  /* Paper texture overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px);
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ============ HEADER ============ */
+  .hero {
+    text-align: center;
+    padding: 60px 20px 30px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero h1 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 700;
+    color: var(--ink);
+    display: inline-block;
+    position: relative;
+    letter-spacing: 1px;
+  }
+
+  /* Hand-drawn underline */
+  .hero h1::after {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 90%;
+    margin: 4px auto 0;
+    background: var(--gold);
+    transform: skew(-15deg);
+    border-radius: 2px;
+    box-shadow: 3px 2px 0 rgba(0,0,0,0.15);
+  }
+
+  .hero .subtitle {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    color: var(--burgundy);
+    margin-top: 15px;
+    font-style: italic;
+  }
+
+  .hero .ornament {
+    color: var(--gold);
+    font-size: 1.4rem;
+    letter-spacing: 12px;
+    margin-top: 15px;
+  }
+
+  /* ============ SKETCH BOX ============ */
+  .sketch-box {
+    border: 2.5px solid var(--ink);
+    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+    padding: 35px;
+    margin: 35px auto;
+    max-width: 760px;
+    background: var(--cream);
+    box-shadow:
+      6px 6px 0 rgba(184,137,58,0.25),
+      12px 12px 0 rgba(26,26,26,0.06);
+    position: relative;
+    z-index: 2;
+  }
+
+  .sketch-box.alt {
+    border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
+    box-shadow:
+      -6px 6px 0 rgba(107,31,42,0.18),
+      -12px 12px 0 rgba(26,26,26,0.06);
+  }
+
+  /* ============ TYPOGRAPHY ============ */
+  h2 {
+    font-family: 'Caveat', cursive;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 15px;
+    position: relative;
+    display: inline-block;
+  }
+
+  h2::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--gold);
+    transform: skew(-25deg);
+    opacity: 0.7;
+  }
+
+  h3 {
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    color: var(--burgundy);
+    margin: 20px 0 8px;
+  }
+
+  p {
+    font-size: 1.15rem;
+    color: #2A2A2A;
+    margin-bottom: 12px;
+  }
+
+  .gold-text { color: var(--gold); font-weight: 600; }
+  .burgundy-text { color: var(--burgundy); font-weight: 600; }
+
+  /* ============ LISTS ============ */
+  ul.clean {
+    list-style: none;
+    padding-left: 5px;
+  }
+
+  ul.clean li {
+    padding: 6px 0 6px 30px;
+    position: relative;
+    font-size: 1.1rem;
+  }
+
+  ul.clean li::before {
+    content: "→";
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  /* ============ DIVIDER ============ */
+  hr {
+    border: none;
+    height: 2px;
+    margin: 25px 0;
+    background: linear-gradient(to right,
+      transparent 0%,
+      var(--pencil) 15%,
+      var(--pencil) 85%,
+      transparent 100%);
+    opacity: 0.5;
+  }
+
+  /* ============ BUTTON ============ */
+  .sketch-btn {
+    background: none;
+    border: 2.5px solid var(--ink);
+    border-radius: 12px 22px 12px 22px;
+    padding: 14px 32px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+    margin-top: 15px;
+    position: relative;
+  }
+
+  .sketch-btn:hover {
+    background: var(--gold);
+    color: var(--cream);
+    border-color: var(--gold);
+    transform: rotate(-2deg) translateY(-3px);
+    box-shadow: 4px 4px 0 rgba(26,26,26,0.2);
+  }
+
+  .sketch-btn.primary {
+    background: var(--burgundy);
+    color: var(--cream);
+    border-color: var(--burgundy);
+  }
+
+  .sketch-btn.primary:hover {
+    background: var(--gold);
+    border-color: var(--gold);
+  }
+
+  /* ============ CODE BLOCK (sketchy) ============ */
+  .code-block {
+    background: #1A1A1A;
+    color: #E8DCC8;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95rem;
+    padding: 20px 24px;
+    border-radius: 8px 20px 8px 20px;
+    border: 2px solid var(--ink);
+    margin: 18px 0;
+    overflow-x: auto;
+    line-height: 1.6;
+    box-shadow: 5px 5px 0 rgba(184,137,58,0.3);
+  }
+
+  .code-block .comment { color: #8A7F6D; font-style: italic; }
+  .code-block .cmd { color: #D4AF37; font-weight: bold; }
+  .code-block .str { color: #B8893A; }
+
+  /* ============ STEPS ============ */
+  .step {
+    display: flex;
+    gap: 18px;
+    margin: 20px 0;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border: 2.5px solid var(--gold);
+    border-radius: 50% 45% 50% 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Caveat', cursive;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    background: var(--cream);
+    transform: rotate(-3deg);
+  }
+
+  .step-content { flex: 1; }
+
+  /* ============ TABLE ============ */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 18px 0;
+    font-size: 1.05rem;
+  }
+
+  .spec-table th,
+  .spec-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px dashed var(--pencil);
+  }
+
+  .spec-table th {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--burgundy);
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .spec-table tr:hover td {
+    background: rgba(184,137,58,0.08);
+  }
+
+  /* ============ WOBBLE ANIMATION ============ */
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-1deg); }
+    50% { transform: rotate(1deg); }
+  }
+  .wobble { animation: wobble 4s ease-in-out infinite; }
+
+  /* ============ FOOTER ============ */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--pencil);
+    position: relative;
+    z-index: 2;
+  }
+
+  footer .ornament {
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 10px;
+    display: block;
+    margin-bottom: 10px;
+  }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 600px) {
+    .sketch-box { padding: 22px; margin: 20px auto; }
+    .hero { padding: 40px 15px 20px; }
+    .step { flex-direction: column; gap: 10px; }
+    .spec-table { font-size: 0.9rem; }
+    .spec-table th, .spec-table td { padding: 8px 6px; }
+  }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ============ HERO ============ -->
+  <header class="hero">
+    <h1>Run LLMs Locally</h1>
+    <p class="subtitle">Private. Powerful. Permanently yours.</p>
+    <div class="ornament">✦ ✦ ✦</div>
+  </header>
+
+  <!-- ============ INTRO ============ -->
+  <section class="sketch-box">
+    <h2>What is a Local LLM?</h2>
+    <p>
+      A <span class="gold-text">local Large Language Model</span> runs entirely on your own computer —
+      no cloud, no subscriptions, no data leaving your machine.
+      You get the full power of modern AI with <span class="burgundy-text">total privacy</span>
+      and zero ongoing cost.
+    </p>
+    <hr>
+    <h3>Why go local?</h3>
+    <ul class="clean">
+      <li><strong>Privacy first</strong> — your prompts never leave your device</li>
+      <li><strong>No subscription fees</strong> — pay once, run forever</li>
+      <li><strong>Offline capable</strong> — works without internet</li>
+      <li><strong>Full control</strong> — fine-tune, modify, and experiment freely</li>
+      <li><strong>Unlimited usage</strong> — no token limits, no rate caps</li>
+    </ul>
+  </section>
+
+  <!-- ============ REQUIREMENTS ============ -->
+  <section class="sketch-box alt">
+    <h2>Hardware You'll Need</h2>
+    <p>Local LLMs scale with your hardware. Here's a rough guide:</p>
+    <table class="spec-table">
+      <thead>
+        <tr>
+          <th>Model Size</th>
+          <th>RAM / VRAM</th>
+          <th>Best For</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>3B params</td><td>4–8 GB</td><td>Light chat, laptops</td></tr>
+        <tr><td>7B params</td><td>8–16 GB</td><td>Everyday assistant</td></tr>
+        <tr><td>13B params</td><td>16–24 GB</td><td>Serious coding & writing</td></tr>
+        <tr><td>70B params</td><td>48+ GB</td><td>Near-GPT-4 quality</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:1rem; color:var(--pencil); font-style:italic;">
+      💡 Tip: A modern GPU (RTX 3060+) dramatically speeds things up.
+    </p>
+  </section>
+
+  <!-- ============ HOW TO ============ -->
+  <section class="sketch-box">
+    <h2>How to Run One — Step by Step</h2>
+
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h3>Install Ollama</h3>
+        <p>Ollama is the easiest way to run local models. Download it from <span class="gold-text">ollama.com</span>.</p>
+        <div class="code-block">
+          <span class="comment"># macOS / Linux</span><br>
+          <span class="cmd">curl</span> -fsSL https://ollama.com/install.sh | <span class="cmd">sh</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h3>Pull a Model</h3>
+        <p>Download a model like Llama 3 or Mistral with one command.</p>
+        <div class="code-block">
+          <span class="cmd">ollama pull</span> <span class="str">llama3</span><br>
+          <span class="comment"># or try: mistral, phi3, gemma2, qwen2</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <h3>Chat With It</h3>
+        <p>Start an interactive session right in your terminal.</p>
+        <div class="code-block">
+          <span class="cmd">ollama run</span> <span class="str">llama3</span><br>
+          <span class="comment">>>> Hello! How can I help you today?</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <h3>Add a GUI (Optional)</h3>
+        <p>Prefer a chat interface? Install <span class="gold-text">Open WebUI</span> or <span class="gold-text">LM Studio</span> for a polished experience.</p>
+      </div>
+    </div>
+
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <h3>Use It From Code</h3>
+        <p>Ollama exposes a local API you can hit from any language.</p>
+        <div class="code-block">
+          <span class="comment"># Python example</span><br>
+          <span class="cmd">import</span> requests<br><br>
+          r = requests.post(<span class="str">"http://localhost:11434/api/generate"</span>,<br>
+          &nbsp;&nbsp;json={<span class="str">"model"</span>: <span class="str">"llama3"</span>, <span class="str">"prompt"</span>: <span class="str">"Hello!"</span>})<br>
+          <span class="cmd">print</span>(r.json())
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <p style="text-align:center; font-style:italic; color:var(--pencil);">
+      That's it — you're running AI on your own terms.
+    </p>
+    <div style="text-align:center;">
+      <button class="sketch-btn primary" onclick="alert('Now go run: ollama pull llama3 🚀')">
+        Get Started →
+      </button>
+    </div>
+  </section>
+
+  <!-- ============ MODEL RECOMMENDATIONS ============ -->
+  <section class="sketch-box alt">
+    <h2>Recommended Models</h2>
+    <ul class="clean">
+      <li><strong>Llama 3 (8B)</strong> — Best all-rounder for most users</li>
+      <li><strong>Mistral 7B</strong> — Fast, lightweight, great for coding</li>
+      <li><strong>Phi-3 Mini</strong> — Tiny but surprisingly capable</li>
+      <li><strong>Gemma 2</strong> — Google's open model, polished output</li>
+      <li><strong>Qwen 2.5 Coder</strong> — Excellent for programming tasks</li>
+      <li><strong>Llama 3 (70B)</strong> — Near-GPT-4 quality if you have the VRAM</li>
+    </ul>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <span class="ornament">✦ ✦ ✦</span>
+    Crafted with ink, gold, and curiosity.<br>
+    Your machine. Your model. Your rules.
+  </footer>
+
+</body>
+</html>
