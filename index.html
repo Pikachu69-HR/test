@@ -3,332 +3,947 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LocalLLM — Run AI On Your Own Machine</title>
+<title>NEXUS AI · Notebook Edition</title>
+
+<!-- ⚠️ Popunder Ad এখানে বসান -->
+
+<!-- ========== FONTS ========== -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
 <style>
-  /* ============ LUXURY HAND-DRAWN THEME ============ */
-  :root {
-    --paper: #F5EFE3;
-    --paper-dark: #EBE2D0;
-    --ink: #1A1A1A;
-    --gold: #B8893A;
-    --gold-light: #D4AF37;
-    --burgundy: #6B1F2A;
-    --pencil: #8A7F6D;
-    --cream: #FBF7EE;
-  }
+/* ============================================================
+   MARGINALIA NOTEBOOK STYLE — NEXUS AI CHAT
+   ============================================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    background-color: var(--paper);
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(184,137,58,0.06) 0%, transparent 50%),
-      radial-gradient(circle at 80% 70%, rgba(107,31,42,0.05) 0%, transparent 50%);
-    color: var(--ink);
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    line-height: 1.7;
-    padding: 20px;
+body {
+    background: #e8e0d5;
+    font-family: 'Quicksand', sans-serif;
     min-height: 100vh;
-  }
-
-  /* Paper texture overlay */
-  body::before {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image:
-      repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.012) 2px, rgba(0,0,0,0.012) 4px);
-    pointer-events: none;
-    z-index: 1;
-  }
-
-  /* ============ HEADER ============ */
-  .hero {
-    text-align: center;
-    padding: 60px 20px 30px;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero h1 {
-    font-family: 'Caveat', cursive;
-    font-size: clamp(2.8rem, 7vw, 5rem);
-    font-weight: 700;
-    color: var(--ink);
-    display: inline-block;
-    position: relative;
-    letter-spacing: 1px;
-  }
-
-  /* Hand-drawn underline */
-  .hero h1::after {
-    content: "";
-    display: block;
-    height: 4px;
-    width: 90%;
-    margin: 4px auto 0;
-    background: var(--gold);
-    transform: skew(-15deg);
-    border-radius: 2px;
-    box-shadow: 3px 2px 0 rgba(0,0,0,0.15);
-  }
-
-  .hero .subtitle {
-    font-family: 'Caveat', cursive;
-    font-size: 1.5rem;
-    color: var(--burgundy);
-    margin-top: 15px;
-    font-style: italic;
-  }
-
-  .hero .ornament {
-    color: var(--gold);
-    font-size: 1.4rem;
-    letter-spacing: 12px;
-    margin-top: 15px;
-  }
-
-  /* ============ SKETCH BOX ============ */
-  .sketch-box {
-    border: 2.5px solid var(--ink);
-    border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
-    padding: 35px;
-    margin: 35px auto;
-    max-width: 760px;
-    background: var(--cream);
-    box-shadow:
-      6px 6px 0 rgba(184,137,58,0.25),
-      12px 12px 0 rgba(26,26,26,0.06);
-    position: relative;
-    z-index: 2;
-  }
-
-  .sketch-box.alt {
-    border-radius: 15px 225px 15px 255px / 255px 15px 225px 15px;
-    box-shadow:
-      -6px 6px 0 rgba(107,31,42,0.18),
-      -12px 12px 0 rgba(26,26,26,0.06);
-  }
-
-  /* ============ TYPOGRAPHY ============ */
-  h2 {
-    font-family: 'Caveat', cursive;
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin-bottom: 15px;
-    position: relative;
-    display: inline-block;
-  }
-
-  h2::after {
-    content: "";
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 100%;
-    height: 2px;
-    background: var(--gold);
-    transform: skew(-25deg);
-    opacity: 0.7;
-  }
-
-  h3 {
-    font-family: 'Caveat', cursive;
-    font-size: 1.6rem;
-    color: var(--burgundy);
-    margin: 20px 0 8px;
-  }
-
-  p {
-    font-size: 1.15rem;
-    color: #2A2A2A;
-    margin-bottom: 12px;
-  }
-
-  .gold-text { color: var(--gold); font-weight: 600; }
-  .burgundy-text { color: var(--burgundy); font-weight: 600; }
-
-  /* ============ LISTS ============ */
-  ul.clean {
-    list-style: none;
-    padding-left: 5px;
-  }
-
-  ul.clean li {
-    padding: 6px 0 6px 30px;
-    position: relative;
-    font-size: 1.1rem;
-  }
-
-  ul.clean li::before {
-    content: "→";
-    position: absolute;
-    left: 0;
-    color: var(--gold);
-    font-weight: bold;
-    font-size: 1.2rem;
-  }
-
-  /* ============ DIVIDER ============ */
-  hr {
-    border: none;
-    height: 2px;
-    margin: 25px 0;
-    background: linear-gradient(to right,
-      transparent 0%,
-      var(--pencil) 15%,
-      var(--pencil) 85%,
-      transparent 100%);
-    opacity: 0.5;
-  }
-
-  /* ============ BUTTON ============ */
-  .sketch-btn {
-    background: none;
-    border: 2.5px solid var(--ink);
-    border-radius: 12px 22px 12px 22px;
-    padding: 14px 32px;
-    font-family: 'Caveat', cursive;
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--ink);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-block;
-    margin-top: 15px;
-    position: relative;
-  }
-
-  .sketch-btn:hover {
-    background: var(--gold);
-    color: var(--cream);
-    border-color: var(--gold);
-    transform: rotate(-2deg) translateY(-3px);
-    box-shadow: 4px 4px 0 rgba(26,26,26,0.2);
-  }
-
-  .sketch-btn.primary {
-    background: var(--burgundy);
-    color: var(--cream);
-    border-color: var(--burgundy);
-  }
-
-  .sketch-btn.primary:hover {
-    background: var(--gold);
-    border-color: var(--gold);
-  }
-
-  /* ============ CODE BLOCK (sketchy) ============ */
-  .code-block {
-    background: #1A1A1A;
-    color: #E8DCC8;
-    font-family: 'Courier New', monospace;
-    font-size: 0.95rem;
-    padding: 20px 24px;
-    border-radius: 8px 20px 8px 20px;
-    border: 2px solid var(--ink);
-    margin: 18px 0;
-    overflow-x: auto;
-    line-height: 1.6;
-    box-shadow: 5px 5px 0 rgba(184,137,58,0.3);
-  }
-
-  .code-block .comment { color: #8A7F6D; font-style: italic; }
-  .code-block .cmd { color: #D4AF37; font-weight: bold; }
-  .code-block .str { color: #B8893A; }
-
-  /* ============ STEPS ============ */
-  .step {
     display: flex;
-    gap: 18px;
-    margin: 20px 0;
+    justify-content: center;
     align-items: flex-start;
-  }
+    padding: 2rem 1.5rem;
+}
 
-  .step-num {
-    flex-shrink: 0;
-    width: 48px;
-    height: 48px;
-    border: 2.5px solid var(--gold);
-    border-radius: 50% 45% 50% 45%;
+/* ---------- NOTEBOOK WRAPPER ---------- */
+.notebook-wrapper {
+    max-width: 850px;
+    width: 100%;
+    background: #fcf8f0;
+    background-image:
+        linear-gradient(to right, #d94f4f 0px, #d94f4f 2.5px, transparent 2.5px, transparent 100%),
+        repeating-linear-gradient(transparent,
+            transparent 27px,
+            #b8cbd9 27px,
+            #b8cbd9 28px);
+    background-size: 100% 28px, 100% 28px;
+    background-position: 65px 0, 0 0;
+    background-repeat: repeat-y, repeat;
+    padding: 3rem 3rem 3rem 5rem;
+    border-radius: 6px 24px 24px 6px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.06);
+    position: relative;
+}
+
+.content {
+    position: relative;
+    z-index: 2;
+}
+
+/* ---------- HEADER ---------- */
+.header-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.header-left {
+    flex: 1;
+    min-width: 200px;
+}
+
+.margin-label {
+    color: #d94f4f;
+    font-family: 'Caveat', cursive;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding-left: 0.8rem;
+    border-left: 3px solid #d94f4f;
+    margin-bottom: 0.2rem;
+    opacity: 0.8;
+}
+
+h1 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 3.8rem;
+    color: #1a2a3a;
+    line-height: 1;
+    margin-top: -0.2rem;
+    transform: rotate(-0.8deg);
+    letter-spacing: 0.02em;
+}
+
+.subhead {
+    font-family: 'Caveat', cursive;
+    font-weight: 500;
+    font-size: 1.4rem;
+    color: #4a5c6e;
+    background: rgba(255, 235, 100, 0.3);
+    padding: 0.1rem 0.8rem;
+    display: inline-block;
+    border-radius: 3px;
+    margin-top: -0.3rem;
+}
+
+.header-right {
+    background: rgba(255, 252, 242, 0.7);
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px 12px 12px 4px;
+    border-left: 4px solid #d94f4f;
+    font-size: 0.9rem;
+    color: #2d4050;
+    min-width: 160px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.04);
+    backdrop-filter: blur(2px);
+}
+
+.header-right strong {
+    color: #1a2e4a;
+}
+
+.status-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: #3a8a5a;
+    font-weight: 600;
+    margin-top: 0.3rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #3a8a5a;
+    box-shadow: 0 0 8px #3a8a5a;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.2); }
+}
+
+/* ============================================================
+   AD ZONES (Notebook-styled)
+   ============================================================ */
+.ad-zone {
+    background: rgba(255, 252, 242, 0.4);
+    border: 2px dashed #d4c8b4;
+    border-radius: 6px 16px 16px 6px;
+    padding: 14px 12px;
+    margin: 1.2rem 0;
+    text-align: center;
+    min-height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Caveat', cursive;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: var(--gold);
-    background: var(--cream);
-    transform: rotate(-3deg);
-  }
-
-  .step-content { flex: 1; }
-
-  /* ============ TABLE ============ */
-  .spec-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 18px 0;
-    font-size: 1.05rem;
-  }
-
-  .spec-table th,
-  .spec-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px dashed var(--pencil);
-  }
-
-  .spec-table th {
-    font-family: 'Caveat', cursive;
-    font-size: 1.3rem;
-    color: var(--burgundy);
-    border-bottom: 2px solid var(--gold);
-  }
-
-  .spec-table tr:hover td {
-    background: rgba(184,137,58,0.08);
-  }
-
-  /* ============ WOBBLE ANIMATION ============ */
-  @keyframes wobble {
-    0%, 100% { transform: rotate(-1deg); }
-    50% { transform: rotate(1deg); }
-  }
-  .wobble { animation: wobble 4s ease-in-out infinite; }
-
-  /* ============ FOOTER ============ */
-  footer {
-    text-align: center;
-    padding: 40px 20px;
-    font-family: 'Caveat', cursive;
-    font-size: 1.3rem;
-    color: var(--pencil);
+    color: #8a9caa;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-family: 'Quicksand', sans-serif;
     position: relative;
-    z-index: 2;
-  }
+    overflow: hidden;
+    backdrop-filter: blur(1px);
+}
 
-  footer .ornament {
-    color: var(--gold);
+.ad-zone::before {
+    content: '✧ AD';
+    position: absolute;
+    top: 6px;
+    left: 10px;
+    font-family: 'Caveat', cursive;
+    font-size: 13px;
+    color: #d94f4f;
+    opacity: 0.7;
+    font-weight: 600;
+}
+
+.ad-zone.ad-tall {
+    min-height: 260px;
+}
+
+.ad-zone-mobile {
+    display: none;
+    min-height: 60px;
+}
+
+.ad-zone-mobile::before {
+    content: '✧ AD · M';
+    font-size: 11px;
+}
+
+/* ---------- STATIONERY ROW ---------- */
+.stationery-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0.5rem 0 1.5rem 0;
+    align-items: flex-start;
+}
+
+.sticky-note {
+    background: #f9f1b8;
+    padding: 0.5rem 1.5rem 0.5rem 1.2rem;
+    border-radius: 0 12px 12px 12px;
+    box-shadow: 4px 5px 10px rgba(0, 0, 0, 0.06);
+    transform: rotate(1.2deg);
+    font-family: 'Caveat', cursive;
     font-size: 1.2rem;
-    letter-spacing: 10px;
-    display: block;
-    margin-bottom: 10px;
-  }
+    color: #2d3e4e;
+    border-left: 4px solid #d94f4f;
+    background-image: repeating-linear-gradient(transparent,
+            transparent 27px,
+            #b8cbd9 27px,
+            #b8cbd9 28px);
+    background-size: 100% 28px;
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-color: #f9f1b8;
+    background-blend-mode: overlay;
+    flex: 1;
+    min-width: 160px;
+}
 
-  /* ============ RESPONSIVE ============ */
-  @media (max-width: 600px) {
-    .sketch-box { padding: 22px; margin: 20px auto; }
-    .hero { padding: 40px 15px 20px; }
-    .step { flex-direction: column; gap: 10px; }
-    .spec-table { font-size: 0.9rem; }
-    .spec-table th, .spec-table td { padding: 8px 6px; }
-  }
+.tab-element {
+    display: inline-block;
+    background: #fcf8f0;
+    padding: 0.3rem 2rem 0.3rem 1.2rem;
+    border-radius: 0 20px 20px 0;
+    border-left: 5px solid #d94f4f;
+    box-shadow: -3px 3px 8px rgba(0, 0, 0, 0.04);
+    font-family: 'Caveat', cursive;
+    font-size: 1.2rem;
+    color: #1e3a5f;
+    align-self: flex-start;
+}
+
+/* ---------- CHAT CARD ---------- */
+.chat-card {
+    background: rgba(255, 252, 242, 0.55);
+    backdrop-filter: blur(1px);
+    padding: 1.5rem 1.5rem 1.2rem 1.5rem;
+    border-radius: 4px 20px 20px 20px;
+    border: 1px solid #d4c8b4;
+    box-shadow: 5px 5px 0 #d4c8b4;
+    transition: all 0.2s ease;
+    background-image: repeating-linear-gradient(transparent,
+            transparent 27px,
+            #b8cbd9 27px,
+            #b8cbd9 28px);
+    background-size: 100% 28px;
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-blend-mode: overlay;
+    margin: 0.5rem 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-card:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 #b0a392;
+}
+
+.chat-card h3 {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: 1.8rem;
+    color: #1a2a3a;
+    border-bottom: 2px dotted #d94f4f;
+    padding-bottom: 0.1rem;
+    display: inline-block;
+    margin-bottom: 0.8rem;
+}
+
+.chat-card .chat-meta {
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    color: #6a7e8e;
+    margin-bottom: 0.6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.chat-card .chat-meta .model-tag {
+    display: inline-block;
+    background: #e6dccb;
+    padding: 0.1rem 0.9rem;
+    border-radius: 20px 4px 4px 20px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: #3a4a5a;
+    letter-spacing: 0.3px;
+    font-family: 'Quicksand', sans-serif;
+}
+
+/* ---------- CHAT MESSAGES ---------- */
+.chat-messages {
+    flex: 1;
+    max-height: 380px;
+    overflow-y: auto;
+    padding-right: 0.4rem;
+    margin-bottom: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    scroll-behavior: smooth;
+}
+
+.chat-messages::-webkit-scrollbar { width: 6px; }
+.chat-messages::-webkit-scrollbar-track { background: rgba(184, 203, 217, 0.2); border-radius: 10px; }
+.chat-messages::-webkit-scrollbar-thumb { background: #b8cbd9; border-radius: 10px; }
+.chat-messages::-webkit-scrollbar-thumb:hover { background: #d94f4f; }
+
+.msg {
+    display: flex;
+    gap: 0.6rem;
+    max-width: 90%;
+    animation: msgIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes msgIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+.msg-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px 12px 12px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    border: 2px solid #d4c8b4;
+    box-shadow: 2px 2px 0 #d4c8b4;
+}
+
+.msg.ai .msg-avatar {
+    background: #fcf8f0;
+    color: #1e3a5f;
+}
+
+.msg.user .msg-avatar {
+    background: #f9f1b8;
+    color: #8a3a3a;
+    border-color: #d94f4f;
+    box-shadow: 2px 2px 0 #d94f4f;
+}
+
+.msg-bubble {
+    padding: 0.7rem 1rem;
+    border-radius: 4px 14px 14px 14px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    position: relative;
+    font-family: 'Quicksand', sans-serif;
+    border: 1px solid #d4c8b4;
+    background: rgba(255, 252, 242, 0.7);
+    box-shadow: 2px 2px 0 rgba(212, 200, 180, 0.4);
+    color: #1f2c3a;
+}
+
+.msg.ai .msg-bubble {
+    border-left: 3px solid #d94f4f;
+}
+
+.msg.user .msg-bubble {
+    border-left: 3px solid #4a7a9c;
+    background: rgba(249, 241, 184, 0.5);
+    border-radius: 14px 4px 14px 14px;
+}
+
+/* Typing */
+.typing {
+    display: flex;
+    gap: 4px;
+    padding: 0.3rem 0;
+}
+
+.typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #d94f4f;
+    animation: typing 1.4s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.2s; background: #b8cbd9; }
+.typing span:nth-child(3) { animation-delay: 0.4s; background: #d94f4f; }
+
+@keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-6px); opacity: 1; }
+}
+
+/* ---------- QUICK PROMPTS ---------- */
+.quick-prompts {
+    display: flex;
+    gap: 0.5rem;
+    padding: 0.5rem 0 0.8rem 0;
+    flex-wrap: wrap;
+}
+
+.quick-btn {
+    padding: 0.35rem 0.9rem;
+    background: rgba(255, 252, 242, 0.7);
+    border: 1.5px solid #d4c8b4;
+    border-radius: 20px;
+    color: #3a4a5a;
+    font-size: 0.75rem;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 1px 1px 0 #d4c8b4;
+}
+
+.quick-btn:hover {
+    background: #f9f1b8;
+    border-color: #d94f4f;
+    box-shadow: 2px 2px 0 #d94f4f;
+    transform: translate(-1px, -1px);
+    color: #1a2a3a;
+}
+
+/* ---------- CHAT INPUT ---------- */
+.chat-input-area {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.2rem;
+    align-items: center;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 0.65rem 1.1rem;
+    border: 1.5px solid #d4c8b4;
+    border-radius: 30px;
+    background: rgba(255, 252, 242, 0.7);
+    font-family: 'Quicksand', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: all 0.2s;
+    box-shadow: inset 1px 2px 4px rgba(0, 0, 0, 0.02);
+    color: #1f2c3a;
+}
+
+.chat-input-area input:focus {
+    border-color: #d94f4f;
+    box-shadow: 0 0 0 3px rgba(217, 79, 79, 0.1);
+}
+
+.chat-input-area input::placeholder {
+    color: #8a9caa;
+}
+
+.chat-input-area button {
+    background: #fcf8f0;
+    padding: 0.55rem 1.6rem;
+    border-radius: 30px;
+    border: 1.5px solid #d94f4f;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: #1a2a3a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    box-shadow: 2px 2px 0 #d94f4f;
+    white-space: nowrap;
+}
+
+.chat-input-area button:hover:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #d94f4f;
+    background: #fcf8f0;
+}
+
+.chat-input-area button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    box-shadow: 1px 1px 0 #d94f4f;
+}
+
+/* ---------- FOOTER ---------- */
+.sign-in-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1.2rem;
+    border-top: 2px dashed #b8cbd9;
+}
+
+.footer-text {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: #5a6e7e;
+}
+
+.footer-text .red-dot {
+    color: #d94f4f;
+    font-weight: 700;
+}
+
+.sign-in-btn {
+    background: #fcf8f0;
+    padding: 0.4rem 1.8rem;
+    border-radius: 30px;
+    border: 1.5px solid #d94f4f;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 600;
+    color: #1a2a3a;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    box-shadow: 2px 2px 0 #d94f4f;
+}
+
+.sign-in-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0 #d94f4f;
+}
+
+.margin-note {
+    margin-top: 1.2rem;
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    color: #aa3a3a;
+    border-left: 3px solid #d94f4f;
+    padding-left: 0.8rem;
+    opacity: 0.7;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .notebook-wrapper {
+        padding: 2rem 1.2rem 2rem 2.5rem;
+        background-position: 35px 0, 0 0;
+    }
+    h1 { font-size: 3rem; }
+    .chat-messages { max-height: 300px; }
+    .chat-card { padding: 1.2rem; }
+    .msg { max-width: 95%; }
+
+    /* Ad responsive */
+    .ad-zone { display: none; }
+    .ad-zone-mobile { display: flex; }
+}
+
+@media (max-width: 480px) {
+    body { padding: 0.8rem; }
+    .notebook-wrapper {
+        padding: 1.2rem 0.8rem 1.2rem 1.8rem;
+        background-position: 20px 0, 0 0;
+    }
+    h1 { font-size: 2.4rem; }
+    .subhead { font-size: 1.1rem; }
+    .header-section { flex-direction: column; gap: 0.8rem; }
+    .header-right { width: 100%; }
+    .stationery-row { flex-direction: column; }
+    .chat-input-area { flex-wrap: wrap; }
+    .chat-input-area button { width: 100%; }
+    .chat-messages { max-height: 260px; }
+    .msg-avatar { width: 30px; height: 30px; font-size: 0.65rem; }
+    .msg-bubble { font-size: 0.85rem; padding: 0.5rem 0.8rem; }
+    .sign-in-area { flex-direction: column; align-items: stretch; text-align: center; }
+}
 </style>
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
+<div class="notebook-wrapper">
+    <div class="content">
+
+        <!-- ===== HEADER ===== -->
+        <div class="header-section">
+            <div class="header-left">
+                <div class="margin-label">✧ margin</div>
+                <h1>NEXUS AI</h1>
+                <div class="subhead">✎ neural notebook assistant</div>
+            </div>
+            <div class="header-right">
+                <strong>⚡ AI CORE</strong><br>
+                <span style="font-size:0.8rem; color:#4a5c6e;">hand-drawn · ruled · fallback</span>
+                <div class="status-line">
+                    <span class="status-dot"></span>
+                    <span id="statusLabel">ONLINE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TOP AD (728x90) ===== -->
+        <div class="ad-zone">
+            <!-- ⚠️ Adsterra 728x90 Banner Code এখানে বসান -->
+            <script>
+  atOptions = {
+    'key' : '3f68ef5703ca0a724060e1eed23196ce',
+    'format' : 'iframe',
+    'height' : 90,
+    'width' : 728,
+    'params' : {}
+  };
+</script>
+<script src="https://bauval.org/22/3f68ef5703ca0a724060e1eed23196ce"></script>
+        </div>
+
+        <!-- ===== MOBILE AD (320x50) ===== -->
+        <div class="ad-zone ad-zone-mobile">
+            <!-- ⚠️ Adsterra 320x50 Mobile Banner Code এখানে বসান -->
+            <script>
+  atOptions = {
+    'key' : 'ea320c3602029a69905d30c0a403971d',
+    'format' : 'iframe',
+    'height' : 50,
+    'width' : 320,
+    'params' : {}
+  };
+</script>
+<script src="https://bauval.org/22/ea320c3602029a69905d30c0a403971d"></script>
+        </div>
+
+        <!-- ===== STATIONERY ROW ===== -->
+        <div class="stationery-row">
+            <div class="sticky-note">
+                <span>📌</span> ask me anything · 4 free AI APIs
+            </div>
+            <div class="tab-element">📂 chat</div>
+        </div>
+
+        <!-- ===== CHAT CARD ===== -->
+        <div class="chat-card">
+            <h3>💬 nexus chat</h3>
+            <div class="chat-meta">
+                <span>✎ auto-fallback system</span>
+                <span class="model-tag" id="modelLabel">AUTO · READY</span>
+            </div>
+
+            <div class="chat-messages" id="chatBody">
+                <div class="msg ai">
+                    <div class="msg-avatar">AI</div>
+                    <div class="msg-bubble">👾 System initialized. I am NEXUS — your cyber AI assistant. Ask me anything, human.</div>
+                </div>
+            </div>
+
+            <!-- Quick prompts -->
+            <div class="quick-prompts">
+                <button class="quick-btn" onclick="quickAsk('Tell me a joke')">😄 Joke</button>
+                <button class="quick-btn" onclick="quickAsk('Explain quantum physics simply')">⚛️ Quantum</button>
+                <button class="quick-btn" onclick="quickAsk('Write a short poem about AI')">📝 Poem</button>
+                <button class="quick-btn" onclick="quickAsk('Give me a business idea')">💡 Idea</button>
+                <button class="quick-btn" onclick="quickAsk('Translate hello to Korean')">🌐 Korean</button>
+            </div>
+
+            <!-- Input -->
+            <div class="chat-input-area">
+                <input 
+                    type="text" 
+                    id="userInput" 
+                    placeholder="Write a note..."
+                    autocomplete="off"
+                    onkeypress="if(event.key==='Enter') sendMessage()"
+                >
+                <button id="sendBtn" onclick="sendMessage()">✎ SEND</button>
+            </div>
+        </div>
+
+        <!-- ===== MIDDLE AD (300x250) ===== -->
+        <div class="ad-zone ad-tall">
+            <!-- ⚠️ Adsterra 300x250 Banner Code এখানে বসান -->
+            <script>
+  atOptions = {
+    'key' : 'd69968c97bf757218cd7e838774d77de',
+    'format' : 'iframe',
+    'height' : 250,
+    'width' : 300,
+    'params' : {}
+  };
+</script>
+<script src="https://bauval.org/22/d69968c97bf757218cd7e838774d77de"></script>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="sign-in-area">
+            <div class="footer-text">
+                <span class="red-dot">●</span> NEXUS AI · notebook design language
+            </div>
+            <button class="sign-in-btn">
+                <span>🔒</span> Sign in to full system
+            </button>
+        </div>
+
+        <div class="margin-note">
+            — red margin where ink meets navigation
+        </div>
+
+    </div>
+</div>
+
+<!-- ⚠️ Social Bar Ad Code এখানে বসান -->
+<script data-cfasync="false" src="https://bauval.org/14/8374d7207d47cb7d348cd24696e7e5b5"></script>
+<script>
+/* ============================================================
+   MULTI-API FALLBACK SYSTEM
+   ============================================================ */
+const chatBody = document.getElementById('chatBody');
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const statusLabel = document.getElementById('statusLabel');
+const modelLabel = document.getElementById('modelLabel');
+
+let isProcessing = false;
+
+/* ---------- API 1: Pollinations GET ---------- */
+async function apiPollinations(prompt) {
+    const url = `https://text.pollinations.ai/${encodeURIComponent(prompt)}`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Pollinations failed');
+    const text = await res.text();
+    if (!text || text.length < 2) throw new Error('Empty response');
+    return text;
+}
+
+/* ---------- API 2: Pollinations POST ---------- */
+async function apiPollinationsPost(prompt) {
+    const res = await fetch('https://text.pollinations.ai/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: [
+                { role: 'system', content: 'You are NEXUS, a helpful AI assistant. Be concise and friendly.' },
+                { role: 'user', content: prompt }
+            ],
+            model: 'openai'
+        })
+    });
+    if (!res.ok) throw new Error('Pollinations POST failed');
+    const text = await res.text();
+    if (!text || text.length < 2) throw new Error('Empty');
+    return text;
+}
+
+/* ---------- API 3: DuckDuckGo ---------- */
+async function apiDuckDuckGo(prompt) {
+    const statusRes = await fetch('https://duckduckgo.com/duckchat/v1/status', {
+        headers: { 'x-vqd-accept': '1' }
+    });
+    if (!statusRes.ok) throw new Error('DDG status failed');
+    const vqd = statusRes.headers.get('x-vqd-4');
+    if (!vqd) throw new Error('No VQD token');
+
+    const chatRes = await fetch('https://duckduckgo.com/duckchat/v1/chat', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-vqd-4': vqd
+        },
+        body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [{ role: 'user', content: prompt }]
+        })
+    });
+    if (!chatRes.ok) throw new Error('DDG chat failed');
+
+    const reader = chatRes.body.getReader();
+    const decoder = new TextDecoder();
+    let fullText = '';
+    let buffer = '';
+
+    while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop();
+        for (const line of lines) {
+            if (line.startsWith('data: ')) {
+                const data = line.slice(6).trim();
+                if (data === '[DONE]') continue;
+                try {
+                    const json = JSON.parse(data);
+                    if (json.message) fullText += json.message;
+                } catch (e) {}
+            }
+        }
+    }
+    if (!fullText) throw new Error('DDG empty');
+    return fullText;
+}
+
+/* ---------- API 4: Blackbox ---------- */
+async function apiBlackbox(prompt) {
+    const res = await fetch('https://www.blackbox.ai/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            messages: [{ role: 'user', content: prompt }],
+            id: 'chat-' + Date.now(),
+            previewToken: null,
+            userId: null,
+            codeModelMode: true,
+            agentMode: {},
+            trendingAgentMode: {},
+            isMicMode: false,
+            isChromeExt: false,
+            githubToken: null
+        })
+    });
+    if (!res.ok) throw new Error('Blackbox failed');
+    const text = await res.text();
+    const clean = text.replace(/\$?@\$?/g, '').trim();
+    if (!clean || clean.length < 2) throw new Error('Empty');
+    return clean;
+}
+
+/* ---------- MASTER FALLBACK ---------- */
+async function getAIResponse(prompt) {
+    const apis = [
+        { name: 'POLLINATIONS-POST', fn: apiPollinationsPost },
+        { name: 'DUCKDUCKGO', fn: apiDuckDuckGo },
+        { name: 'POLLINATIONS-GET', fn: apiPollinations },
+        { name: 'BLACKBOX', fn: apiBlackbox }
+    ];
+
+    for (const api of apis) {
+        try {
+            modelLabel.textContent = api.name + ' · TRYING';
+            const result = await Promise.race([
+                api.fn(prompt),
+                new Promise((_, rej) => setTimeout(() => rej(new Error('Timeout')), 15000))
+            ]);
+            modelLabel.textContent = api.name + ' · OK';
+            return result;
+        } catch (err) {
+            console.warn(`[API] ❌ ${api.name} failed:`, err.message);
+            continue;
+        }
+    }
+
+    modelLabel.textContent = 'ALL FAILED';
+    throw new Error('All APIs failed');
+}
+
+/* ============================================================
+   CHAT UI LOGIC
+   ============================================================ */
+async function sendMessage() {
+    const message = userInput.value.trim();
+    if (!message || isProcessing) return;
+
+    isProcessing = true;
+    sendBtn.disabled = true;
+    statusLabel.textContent = 'PROCESSING';
+    userInput.value = '';
+
+    addMessage('user', message);
+    const typingId = showTyping();
+
+    try {
+        const aiText = await getAIResponse(message);
+        removeTyping(typingId);
+        addMessage('ai', aiText);
+        statusLabel.textContent = 'ONLINE';
+    } catch (err) {
+        removeTyping(typingId);
+        addMessage('ai', '⚠️ All AI services are currently unavailable. Please try again in a moment.');
+        statusLabel.textContent = 'ERROR';
+        console.error(err);
+    } finally {
+        isProcessing = false;
+        sendBtn.disabled = false;
+        userInput.focus();
+    }
+}
+
+function quickAsk(text) {
+    userInput.value = text;
+    sendMessage();
+}
+
+function addMessage(type, text) {
+    const msg = document.createElement('div');
+    msg.className = 'msg ' + type;
+
+    const avatar = document.createElement('div');
+    avatar.className = 'msg-avatar';
+    avatar.textContent = type === 'ai' ? 'AI' : 'YOU';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'msg-bubble';
+    bubble.textContent = text;
+
+    msg.appendChild(avatar);
+    msg.appendChild(bubble);
+    chatBody.appendChild(msg);
+    chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function showTyping() {
+    const id = 'typing-' + Date.now();
+    const msg = document.createElement('div');
+    msg.className = 'msg ai';
+    msg.id = id;
+    msg.innerHTML = `
+        <div class="msg-avatar">AI</div>
+        <div class="msg-bubble">
+            <div class="typing">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
+    chatBody.appendChild(msg);
+    chatBody.scrollTop = chatBody.scrollHeight;
+    return id;
+}
+
+function removeTyping(id) {
+    const el = document.getElementById(id);
+    if (el) el.remove();
+}
+
+/* Auto focus */
+window.addEventListener('load', () => {
+    userInput.focus();
+    console.log('%c⚡ NEXUS AI · Notebook Edition', 'font-size: 18px; font-weight: bold; color: #d94f4f;');
+});
+</script>
 <script>
   atOptions = {
     'key' : '74854a58634a6e002da60b8e9cb9ac49',
@@ -339,151 +954,6 @@
   };
 </script>
 <script src="https://bauval.org/22/74854a58634a6e002da60b8e9cb9ac49"></script>
-  <!-- ============ HERO ============ -->
-  <header class="hero">
-    <h1>Run LLMs Locally</h1>
-    <p class="subtitle">Private. Powerful. Permanently yours.</p>
-    <div class="ornament">✦ ✦ ✦</div>
-  </header>
-
-  <!-- ============ INTRO ============ -->
-  <section class="sketch-box">
-    <h2>What is a Local LLM?</h2>
-    <p>
-      A <span class="gold-text">local Large Language Model</span> runs entirely on your own computer —
-      no cloud, no subscriptions, no data leaving your machine.
-      You get the full power of modern AI with <span class="burgundy-text">total privacy</span>
-      and zero ongoing cost.
-    </p>
-    <hr>
-    <h3>Why go local?</h3>
-    <ul class="clean">
-      <li><strong>Privacy first</strong> — your prompts never leave your device</li>
-      <li><strong>No subscription fees</strong> — pay once, run forever</li>
-      <li><strong>Offline capable</strong> — works without internet</li>
-      <li><strong>Full control</strong> — fine-tune, modify, and experiment freely</li>
-      <li><strong>Unlimited usage</strong> — no token limits, no rate caps</li>
-    </ul>
-  </section>
-
-  <!-- ============ REQUIREMENTS ============ -->
-  <section class="sketch-box alt">
-    <h2>Hardware You'll Need</h2>
-    <p>Local LLMs scale with your hardware. Here's a rough guide:</p>
-    <table class="spec-table">
-      <thead>
-        <tr>
-          <th>Model Size</th>
-          <th>RAM / VRAM</th>
-          <th>Best For</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>3B params</td><td>4–8 GB</td><td>Light chat, laptops</td></tr>
-        <tr><td>7B params</td><td>8–16 GB</td><td>Everyday assistant</td></tr>
-        <tr><td>13B params</td><td>16–24 GB</td><td>Serious coding & writing</td></tr>
-        <tr><td>70B params</td><td>48+ GB</td><td>Near-GPT-4 quality</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:1rem; color:var(--pencil); font-style:italic;">
-      💡 Tip: A modern GPU (RTX 3060+) dramatically speeds things up.
-    </p>
-  </section>
-
-  <!-- ============ HOW TO ============ -->
-  <section class="sketch-box">
-    <h2>How to Run One — Step by Step</h2>
-
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-content">
-        <h3>Install Ollama</h3>
-        <p>Ollama is the easiest way to run local models. Download it from <span class="gold-text">ollama.com</span>.</p>
-        <div class="code-block">
-          <span class="comment"># macOS / Linux</span><br>
-          <span class="cmd">curl</span> -fsSL https://ollama.com/install.sh | <span class="cmd">sh</span>
-        </div>
-      </div>
-    </div>
- <script data-cfasync="false" src="https://abscloud.org/1/875406e4266ef169e981928437b73db9"></script>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-content">
-        <h3>Pull a Model</h3>
-        <p>Download a model like Llama 3 or Mistral with one command.</p>
-        <div class="code-block">
-          <span class="cmd">ollama pull</span> <span class="str">llama3</span><br>
-          <span class="comment"># or try: mistral, phi3, gemma2, qwen2</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-content">
-        <h3>Chat With It</h3>
-        <p>Start an interactive session right in your terminal.</p>
-        <div class="code-block">
-          <span class="cmd">ollama run</span> <span class="str">llama3</span><br>
-          <span class="comment">>>> Hello! How can I help you today?</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-content">
-        <h3>Add a GUI (Optional)</h3>
-        <p>Prefer a chat interface? Install <span class="gold-text">Open WebUI</span> or <span class="gold-text">LM Studio</span> for a polished experience.</p>
-      </div>
-    </div>
-
-    <div class="step">
-      <div class="step-num">5</div>
-      <div class="step-content">
-        <h3>Use It From Code</h3>
-        <p>Ollama exposes a local API you can hit from any language.</p>
-        <div class="code-block">
-          <span class="comment"># Python example</span><br>
-          <span class="cmd">import</span> requests<br><br>
-          r = requests.post(<span class="str">"http://localhost:11434/api/generate"</span>,<br>
-          &nbsp;&nbsp;json={<span class="str">"model"</span>: <span class="str">"llama3"</span>, <span class="str">"prompt"</span>: <span class="str">"Hello!"</span>})<br>
-          <span class="cmd">print</span>(r.json())
-        </div>
-      </div>
-    </div>
-
-    <hr>
-    <p style="text-align:center; font-style:italic; color:var(--pencil);">
-      That's it — you're running AI on your own terms.
-    </p>
-    <div style="text-align:center;">
-      <button class="sketch-btn primary" onclick="alert('Now go run: ollama pull llama3 🚀')">
-        Get Started →
-      </button>
-    </div>
-  </section>
-
-  <!-- ============ MODEL RECOMMENDATIONS ============ -->
-  <section class="sketch-box alt">
-    <h2>Recommended Models</h2>
-    <ul class="clean">
-      <li><strong>Llama 3 (8B)</strong> — Best all-rounder for most users</li>
-      <li><strong>Mistral 7B</strong> — Fast, lightweight, great for coding</li>
-      <li><strong>Phi-3 Mini</strong> — Tiny but surprisingly capable</li>
-      <li><strong>Gemma 2</strong> — Google's open model, polished output</li>
-      <li><strong>Qwen 2.5 Coder</strong> — Excellent for programming tasks</li>
-      <li><strong>Llama 3 (70B)</strong> — Near-GPT-4 quality if you have the VRAM</li>
-    </ul>
-  </section>
-
-  <!-- ============ FOOTER ============ -->
-  <footer>
-    <span class="ornament">✦ ✦ ✦</span>
-    Crafted with ink, gold, and curiosity.<br>
-    Your machine. Your model. Your rules.
-  </footer>
-  <script data-cfasync="false" src="https://bauval.org/14/8374d7207d47cb7d348cd24696e7e5b5"></script>
-
+<script data-cfasync="false" src="https://abscloud.org/1/875406e4266ef169e981928437b73db9"></script>
 </body>
 </html>
